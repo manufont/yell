@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import cn from "classnames";
+import queryString from "query-string";
 
 import "./App.css";
 
@@ -58,11 +59,16 @@ const getVoices = () => {
 
 const isBitValid = bit => Boolean(bit.text && bit.lang);
 
+const getEncodedBit = location => {
+  const searchObj = queryString.parse(location.search);
+  return searchObj.d || "";
+};
+
 function App() {
   const history = useHistory();
   const { location } = history;
   const [isPlaying, setIsPlaying] = useState(false);
-  const bit = decodeBit(location.pathname.slice(1));
+  const bit = decodeBit(getEncodedBit(location));
   const [voices, setVoices] = useState(getVoices());
   const bitIsValid = isBitValid(bit);
   const [hasBeenPlayed, setHasBeenPlayed] = useState(!bitIsValid);
@@ -79,7 +85,7 @@ function App() {
   const onTextInput = event => {
     const text = event.target.value;
     const newBit = { ...bit, text };
-    history.replace("/" + encodeBit(newBit));
+    history.replace("/?d=" + encodeBit(newBit));
   };
 
   const play = async () => {
@@ -104,7 +110,7 @@ function App() {
   const onLangSelect = event => {
     const lang = event.target.value;
     const newBit = { ...bit, lang };
-    history.replace("/" + encodeBit(newBit));
+    history.replace("/?d=" + encodeBit(newBit));
   };
 
   const showForm = !bitIsValid || hasBeenPlayed;
