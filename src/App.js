@@ -82,10 +82,17 @@ function App() {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const setBit = newBit => {
+    const search = queryString.stringify({
+      d: encodeBit(newBit)
+    });
+    history.replace(`${location.pathname}?${search}`);
+  };
+
   const onTextInput = event => {
     const text = event.target.value;
     const newBit = { ...bit, text };
-    history.replace("/?d=" + encodeBit(newBit));
+    setBit(newBit);
   };
 
   const play = async () => {
@@ -110,7 +117,7 @@ function App() {
   const onLangSelect = event => {
     const lang = event.target.value;
     const newBit = { ...bit, lang };
-    history.replace("/?d=" + encodeBit(newBit));
+    setBit(newBit);
   };
 
   const showForm = !bitIsValid || hasBeenPlayed;
